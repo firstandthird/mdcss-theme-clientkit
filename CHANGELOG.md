@@ -1,4 +1,9 @@
 
+3.5.0 / 2016-09-02
+==================
+
+  * changed variables to use development section
+
 3.4.0 / 2016-09-02
 ==================
 
