@@ -54,7 +54,6 @@ module.exports = function (themeopts) {
 
     // set theme options
     docs.themeopts = themeopts;
-
     if (themeopts.colors || themeopts.variables) {
       const styleguide = {
         title: 'Styleguide',
@@ -62,13 +61,33 @@ module.exports = function (themeopts) {
         children: []
       }
       if (themeopts.colors) {
+        const groupColors = (unsortedColors) => {
+          const groups = {};
+          Object.keys(unsortedColors).forEach((colorName) => {
+            const colorValue = unsortedColors[colorName];
+            if (!groups[colorValue]) {
+              groups[colorValue] = [colorName];
+            } else {
+              groups[colorValue].push(colorName);
+            }
+          });
+          return groups;
+        };
+        const groupedColors = groupColors(themeopts.colors);
         styleguide.children.push({
           section: 'Styleguide',
           title: 'Colors',
           name: 'colors',
-          content: Object.keys(themeopts.colors).map((color) => (
-            `<div class="color-swatch" style="background-color: ${themeopts.colors[color]}; color: ${fontContrast(themeopts.colors[color])}; display: inline-block; height: 75px; width: 150px;"><div class="color-value">${themeopts.colors[color]}</div><div class="color-name">${color}</div></div>`
-          )).join('')
+          content: Object.keys(groupedColors).map((colorValue) => {
+            const colorData = groupedColors[colorValue];
+            const strings = colorData.join('<br>');
+            return `<div class="color-swatch" style="background-color: ${colorValue}; color: ${fontContrast(colorValue)}; display: inline-block; height: 200px; width: 200px;">
+              <div class="color-value">${colorValue}</div>
+              <div class="color-name" style="display: table-cell;  vertical-align:bottom; float: right; ">
+                 ${strings}
+              </div>
+             </div>`;
+          })
         });
       }
       if (themeopts.variables) {
