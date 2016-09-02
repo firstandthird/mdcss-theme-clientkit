@@ -54,53 +54,58 @@ module.exports = function (themeopts) {
 
     // set theme options
     docs.themeopts = themeopts;
-    if (themeopts.colors || themeopts.variables) {
+
+    if (themeopts.colors) {
       const styleguide = {
         title: 'Styleguide',
         name: 'styleguide',
         children: []
       }
-      if (themeopts.colors) {
-        const groupColors = (unsortedColors) => {
-          const groups = {};
-          Object.keys(unsortedColors).forEach((colorName) => {
-            const colorValue = unsortedColors[colorName];
-            if (!groups[colorValue]) {
-              groups[colorValue] = [colorName];
-            } else {
-              groups[colorValue].push(colorName);
-            }
-          });
-          return groups;
-        };
-        const groupedColors = groupColors(themeopts.colors);
-        styleguide.children.push({
-          section: 'Styleguide',
-          title: 'Colors',
-          name: 'colors',
-          content: Object.keys(groupedColors).map((colorValue) => {
-            const colorData = groupedColors[colorValue];
-            const strings = colorData.join('<br>');
-            return `<div class="color-swatch" style="background-color: ${colorValue}; color: ${fontContrast(colorValue)}; display: inline-block; height: 200px; width: 200px;">
-              <div class="color-value">${colorValue}</div>
-              <div class="color-name" style="display: table-cell;  vertical-align:bottom; ">
-                 ${strings}
-              </div>
-             </div>`;
-          })
+      const groupColors = (unsortedColors) => {
+        const groups = {};
+        Object.keys(unsortedColors).forEach((colorName) => {
+          const colorValue = unsortedColors[colorName];
+          if (!groups[colorValue]) {
+            groups[colorValue] = [colorName];
+          } else {
+            groups[colorValue].push(colorName);
+          }
         });
-      }
-      if (themeopts.variables) {
-        styleguide.children.push({
-          section: 'Development',
-          title: 'Variables',
-          name: 'variables',
-          content: `<pre class="highlight"><code>${Object.keys(themeopts.variables).map((key) => (
-            `${key}: ${themeopts.variables[key]}`
-          )).join('\n')}</code></pre>`
-        });
-      }
+        return groups;
+      };
+      const groupedColors = groupColors(themeopts.colors);
+      styleguide.children.push({
+        section: 'Styleguide',
+        title: 'Colors',
+        name: 'colors',
+        content: Object.keys(groupedColors).map((colorValue) => {
+          const colorData = groupedColors[colorValue];
+          const strings = colorData.join('<br>');
+          return `<div class="color-swatch" style="background-color: ${colorValue}; color: ${fontContrast(colorValue)}; display: inline-block; height: 200px; width: 200px;">
+            <div class="color-value">${colorValue}</div>
+            <div class="color-name" style="display: table-cell;  vertical-align:bottom; ">
+               ${strings}
+            </div>
+           </div>`;
+        })
+      });
       docs.list.unshift(styleguide);
+    }
+    if (themeopts.variables) {
+      const variables = {
+        title: 'Variables',
+        name: 'variables',
+        children: []
+      }
+      variables.children.push({
+        section: 'Variables',
+        title: 'CSS',
+        name: 'css',
+        content: `<pre class="highlight"><code>${Object.keys(themeopts.variables).map((key) => (
+          `${key}: ${themeopts.variables[key]}`
+        )).join('\n')}</code></pre>`
+      });
+      docs.list.push(variables);
     }
 
     // return promise
