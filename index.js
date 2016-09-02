@@ -83,7 +83,7 @@ module.exports = function (themeopts) {
             const strings = colorData.join('<br>');
             return `<div class="color-swatch" style="background-color: ${colorValue}; color: ${fontContrast(colorValue)}; display: inline-block; height: 200px; width: 200px;">
               <div class="color-value">${colorValue}</div>
-              <div class="color-name" style="display: table-cell;  vertical-align:bottom; float: right; ">
+              <div class="color-name" style="display: table-cell;  vertical-align:bottom; ">
                  ${strings}
               </div>
              </div>`;
