@@ -1,4 +1,10 @@
 
+3.4.0 / 2016-09-02
+==================
+
+  * will try to render a footer if 'info' is provided
+  * groups colors by value
+
 3.3.0 / 2016-08-24
 ==================
 
