@@ -92,7 +92,7 @@ module.exports = function (themeopts) {
       }
       if (themeopts.variables) {
         styleguide.children.push({
-          section: 'Styleguide',
+          section: 'Development',
           title: 'Variables',
           name: 'variables',
           content: `<pre class="highlight"><code>${Object.keys(themeopts.variables).map((key) => (
