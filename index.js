@@ -107,13 +107,15 @@ module.exports = function (themeopts) {
       });
       docs.list.push(variables);
     }
-    Object.keys(themeopts.sectionOrder).forEach((sectionName) => {
-      docs.list.forEach((section) => {
-        if (section.title === sectionName) {
-          section.order = themeopts.sectionOrder[sectionName];
-        }
+    if (themeopts.sectionOrder) {
+      Object.keys(themeopts.sectionOrder).forEach((sectionName) => {
+        docs.list.forEach((section) => {
+          if (section.title === sectionName) {
+            section.order = themeopts.sectionOrder[sectionName];
+          }
+        });
       });
-    });
+    }
 
     // return promise
     return new Promise(function (resolve, reject) {
