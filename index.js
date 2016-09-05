@@ -96,7 +96,7 @@ module.exports = function (themeopts) {
         title: 'Variables',
         name: 'variables',
         children: []
-      }
+      };
       variables.children.push({
         section: 'Variables',
         title: 'CSS',
@@ -107,20 +107,12 @@ module.exports = function (themeopts) {
       });
       docs.list.push(variables);
     }
-    // force mixins to be last:
-    const max = docs.list.reduce((curMax, section) => {
-      if (!section.order) {
-        return curMax;
-      }
-      if (section.order > curMax) {
-        return section.order;
-      }
-      return curMax;
-    }, 0);
-    docs.list.forEach((section) => {
-      if (section.title === 'Development') {
-        section.order = max + 1;
-      }
+    Object.keys(themeopts.sectionOrder).forEach((sectionName) => {
+      docs.list.forEach((section) => {
+        if (section.title === sectionName) {
+          section.order = themeopts.sectionOrder[sectionName];
+        }
+      });
     });
 
     // return promise
