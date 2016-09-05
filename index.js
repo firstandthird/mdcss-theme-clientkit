@@ -4,6 +4,10 @@ const ext = require('object-assign');
 const fs = require('fs');
 const path = require('path');
 const fontColorContrast = require('font-color-contrast');
+const postcss = require('postcss');
+
+var isDoc = /\/*-{3}([\s\S]*?)-{3,}/;
+var isMeta = /([A-z][\w-]*)[ \t]*:[ \t]*([\w\-\.\/][^\n]*)/g;
 
 const fontContrast = function(color) {
   //HACK: check if shorthand (#fff)
@@ -14,6 +18,31 @@ const fontContrast = function(color) {
 }
 
 module.exports = function (themeopts) {
+  // maps section+title -> width, height
+  const dimensions = {};
+  // extract any info from theme comments you might need:
+  themeopts.examples.css.forEach((item) => {
+    // todo: make sure this can get the output css files using themeopts.destinationDir:
+    const text = fs.readFileSync(item.replace('..', themeopts.destinationDir)).toString();
+    const parsedText = postcss.parse(text);
+    parsedText.walkComments((comment) => {
+      const doc = {}
+      // const unparsedMarkdown = comment.text.split('```')[0];
+      comment.text.replace(isDoc, function (isDoc0, metas) {
+        // push meta to documentation
+        if (metas) metas.replace(isMeta, function (isMeta0, name, value) {
+          doc[name] = value.trim();
+        });
+        // remove meta from documentation content
+        return '';
+      }, '').trim();
+      if ('height' in Object.keys(doc)) {
+        const keyName = `${doc.section}${doc.title}`;
+        dimensions[keyName] = { height: doc.height };
+      }
+    })
+  });
+
   // set theme options object
   themeopts = Object(themeopts);
 
@@ -107,7 +136,8 @@ module.exports = function (themeopts) {
       });
       docs.list.push(variables);
     }
-
+    // read the stylesheet, walk the comments:
+    console.log(docs)
     // return promise
     return new Promise(function (resolve, reject) {
       // read template
@@ -117,7 +147,6 @@ module.exports = function (themeopts) {
         else {
           // set examples options
           docs.opts = ext({}, docs.opts, docs.themeopts);
-
           // set compiled template
           docs.template = ejs.compile(contents)(docs);
 
