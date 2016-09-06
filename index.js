@@ -19,15 +19,13 @@ const fontContrast = function(color) {
 
 module.exports = function (themeopts) {
   // maps section+title -> width, height
-  const dimensions = {};
-  // extract any info from theme comments you might need:
+  themeopts.dimensions = {};
+  // extract any info from theme examples neede for formatting them need:
   themeopts.examples.css.forEach((item) => {
-    // todo: make sure this can get the output css files using themeopts.destinationDir:
-    const text = fs.readFileSync(item.replace('..', themeopts.destinationDir)).toString();
+    const text = fs.readFileSync(path.normalize(path.join(themeopts.destination, item))).toString();
     const parsedText = postcss.parse(text);
     parsedText.walkComments((comment) => {
       const doc = {}
-      // const unparsedMarkdown = comment.text.split('```')[0];
       comment.text.replace(isDoc, function (isDoc0, metas) {
         // push meta to documentation
         if (metas) metas.replace(isMeta, function (isMeta0, name, value) {
@@ -36,11 +34,10 @@ module.exports = function (themeopts) {
         // remove meta from documentation content
         return '';
       }, '').trim();
-      if ('height' in Object.keys(doc)) {
-        const keyName = `${doc.section}${doc.title}`;
-        dimensions[keyName] = { height: doc.height };
+      if (Object.keys(doc).indexOf('height') > -1) {
+        themeopts.dimensions[doc.title.toLowerCase()] = { height: doc.height };
       }
-    })
+    });
   });
 
   // set theme options object
@@ -136,8 +133,6 @@ module.exports = function (themeopts) {
       });
       docs.list.push(variables);
     }
-    // read the stylesheet, walk the comments:
-    console.log(docs)
     // return promise
     return new Promise(function (resolve, reject) {
       // read template

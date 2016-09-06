@@ -12,6 +12,13 @@
     <% opts.js.forEach(function (src) {
       %><script src="<%= src %>"></script><%
     }); %>
+    <style><% Object.keys(opts.dimensions).forEach(function(key) { %>
+      #<%- key %> iframe{
+        max-height: <%- opts.dimensions[key].height %>;
+        min-height: <%- opts.dimensions[key].height %>;
+      }
+    <% }); %>
+    </style>
   </head>
   <body>
     <header class="masthead" style="background-color: <%= opts.color %>;">
