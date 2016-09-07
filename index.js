@@ -102,7 +102,7 @@ module.exports = function (themeopts) {
         title: 'Variables',
         name: 'variables',
         children: []
-      }
+      };
       variables.children.push({
         section: 'Variables',
         title: 'CSS',
@@ -112,6 +112,15 @@ module.exports = function (themeopts) {
         )).join('\n')}</code></pre>`
       });
       docs.list.push(variables);
+    }
+    if (themeopts.sectionOrder) {
+      Object.keys(themeopts.sectionOrder).forEach((sectionName) => {
+        docs.list.forEach((section) => {
+          if (section.title === sectionName) {
+            section.order = themeopts.sectionOrder[sectionName];
+          }
+        });
+      });
     }
     // return promise
     return new Promise(function (resolve, reject) {
