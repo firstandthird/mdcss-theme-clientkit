@@ -125,7 +125,7 @@ function menu(children, depth) {
         if (depth < 2) {modifier = "heading";}
         if (depth > 1) {modifier = "item";}
         %>
-        <a class="menu-<%- modifier %>" href="#<%- child.name %>"><span><%= child.title %></span></a>
+        <a class="menu-<%- modifier %>" href="#<%- child.name %>"><span><%= child.title %> </span></a>
         <% if (child.children) menu(child.children, depth + 1) %>
         <%
       }
@@ -161,7 +161,21 @@ function lastModified() {
 }
 
 function sort(childA, childB) {
-  return (childA.order || 0) - (childB.order || 0);
+  var o = (childA.order || 99) - (childB.order || 99);
+  return o;
+  /*
+  if (o === 0) {
+    if (childA.name < childB.name) {
+    console.log('-1');
+      return -1;
+    }
+    if (childA.name > childB.name) {
+    console.log('1');
+      return 1;
+    }
+  }
+  return o;
+  */
 }
 
 %>
