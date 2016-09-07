@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const fontColorContrast = require('font-color-contrast');
 const postcss = require('postcss');
+const kebab = require('lodash.kebabcase');
 
 var isDoc = /\/*-{3}([\s\S]*?)-{3,}/;
 var isMeta = /([A-z][\w-]*)[ \t]*:[ \t]*([\w\-\.\/][^\n]*)/g;
@@ -18,27 +19,6 @@ const fontContrast = function(color) {
 }
 
 module.exports = function (themeopts) {
-  // maps section+title -> width, height
-  themeopts.dimensions = {};
-  // extract any info from theme examples neede for formatting them need:
-  themeopts.examples.css.forEach((item) => {
-    const text = fs.readFileSync(path.normalize(path.join(themeopts.destination, item))).toString();
-    const parsedText = postcss.parse(text);
-    parsedText.walkComments((comment) => {
-      const doc = {}
-      comment.text.replace(isDoc, function (isDoc0, metas) {
-        // push meta to documentation
-        if (metas) metas.replace(isMeta, function (isMeta0, name, value) {
-          doc[name] = value.trim();
-        });
-        // remove meta from documentation content
-        return '';
-      }, '').trim();
-      if (Object.keys(doc).indexOf('height') > -1) {
-        themeopts.dimensions[doc.title.toLowerCase()] = { height: doc.height };
-      }
-    });
-  });
 
   // set theme options object
   themeopts = Object(themeopts);
@@ -135,6 +115,17 @@ module.exports = function (themeopts) {
     }
     // return promise
     return new Promise(function (resolve, reject) {
+      const dimensions = {};
+      const getDimensions = (node) => {
+        if (node.height) {
+          dimensions[kebab(node.title)] = { height: node.height };
+        }
+        if (node.children) {
+          node.children.forEach(getDimensions);
+        }
+      };
+      docs.list.forEach(getDimensions);
+      themeopts.dimensions = dimensions;
       // read template
       fs.readFile(docs.template, 'utf8', function (error, contents) {
         // throw if template could not be read
@@ -144,7 +135,6 @@ module.exports = function (themeopts) {
           docs.opts = ext({}, docs.opts, docs.themeopts);
           // set compiled template
           docs.template = ejs.compile(contents)(docs);
-
           // resolve docs
           resolve(docs);
         }
