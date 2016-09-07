@@ -1,4 +1,9 @@
 
+3.7.0 / 2016-09-06
+==================
+
+  * ordering now comes from 'sectionOrder' option passed in
+
 3.6.0 / 2016-09-02
 ==================
 
