@@ -12,6 +12,24 @@
     <% opts.js.forEach(function (src) {
       %><script src="<%= src %>"></script><%
     }); %>
+    <style>
+    <%
+    const showDimensions = function (node) {
+      if (node.height) {
+    %>
+      #<%= node.name %> iframe{
+        max-height: <%- node.height %>;
+        min-height: <%- node.height %>;
+      }
+    <%
+      }
+      if (node.children) {
+        node.children.forEach(showDimensions);
+      }
+    };
+    list.forEach(showDimensions);
+    %>
+    </style>
   </head>
   <body>
     <header class="masthead" style="background-color: <%= opts.color %>;">
@@ -125,7 +143,7 @@ function menu(children, depth) {
         if (depth < 2) {modifier = "heading";}
         if (depth > 1) {modifier = "item";}
         %>
-        <a class="menu-<%- modifier %>" href="#<%- child.name %>"><span><%= child.title %> </span></a>
+        <a class="menu-<%- modifier %>" href="#<%- child.name %>"><span><%= child.title %></span></a>
         <% if (child.children) menu(child.children, depth + 1) %>
         <%
       }
@@ -161,21 +179,7 @@ function lastModified() {
 }
 
 function sort(childA, childB) {
-  var o = (childA.order || 99) - (childB.order || 99);
-  return o;
-  /*
-  if (o === 0) {
-    if (childA.name < childB.name) {
-    console.log('-1');
-      return -1;
-    }
-    if (childA.name > childB.name) {
-    console.log('1');
-      return 1;
-    }
-  }
-  return o;
-  */
+  return (childA.order || 0) - (childB.order || 0);
 }
 
 %>
