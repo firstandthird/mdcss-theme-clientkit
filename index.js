@@ -87,7 +87,7 @@ module.exports = function (themeopts) {
                ${strings}
             </div>
            </div>`;
-        })
+        }).join('')
       });
       docs.list.unshift(styleguide);
     }
