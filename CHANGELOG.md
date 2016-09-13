@@ -1,4 +1,13 @@
 
+4.0.0 / 2016-09-13
+==================
+
+  * fixed commas in swatches
+  * initial work on redesign using helper classes
+  * Merge pull request #6 from firstandthird/iframeHeight
+  * fixed sections start depth back to 2
+  * will render styles for iframes
+
 3.8.0 / 2016-09-06
 ==================
 
